@@ -852,7 +852,7 @@ def parse_report_email(input_, offline=False, ip_db_path=None,
             sample = payload
         elif content_type == "text/plain":
             if "A message claiming to be from you has failed" in payload:
-                parts = payload.split("detected.")
+                parts = payload.replace("=\r\n", "").split("detected.", 1)
                 field_matches = text_report_regex.findall(parts[0])
                 fields = dict()
                 for match in field_matches:
@@ -863,7 +863,7 @@ def parse_report_email(input_, offline=False, ip_db_path=None,
                                   "".format(fields["received-date"],
                                             fields["sender-ip-address"])
                 sample = parts[1].lstrip()
-                sample = sample.replace("=\r\n", "")
+                sample = sample
                 logger.debug(sample)
         else:
             try:
